@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
 	<authorEmail>info@yireo.com</authorEmail>
 	<authorUrl>www.yireo.com</authorUrl>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<description>A system plugin to dynamically add trademarks to custom strings</description>
 
 	<files>
@@ -37,6 +37,6 @@
     </config>
 
     <updateservers>
-        <server type="extension" priority="1" name="plg_system_trademark">http://www.yireo.com/updates/plg_system_trademark.xml</server>
+        <server type="extension" priority="1" name="plg_system_trademark">https://www.yireo.com/updates/plg_system_trademark.xml</server>
     </updateservers>
 </extension>
