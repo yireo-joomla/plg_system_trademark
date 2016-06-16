@@ -2,99 +2,132 @@
 /**
  * Joomla! plugin Trademark
  *
- * @author Yireo (info@yireo.com)
+ * @author    Yireo (info@yireo.com)
  * @copyright Copyright 2015 Yireo.com. All rights reserved
- * @license GNU Public License
- * @link http://www.yireo.com
+ * @license   GNU Public License
+ * @link      http://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
-defined( '_JEXEC' ) or die();
+defined('_JEXEC') or die();
 
 // Import the parent class
-jimport( 'joomla.plugin.plugin' );
+jimport('joomla.plugin.plugin');
 
 /**
  * Trademark Content Plugin
- *
- * @package		Joomla
- * @subpackage	Content
  */
-class plgSystemTrademark extends JPlugin
+class PlgSystemTrademark extends JPlugin
 {
-    /**
-     * Event onAfterRender
-     *
-     * @access public
-     * @param null
-     * @return null
-     */
-    public function onAfterRender()
-    {
-        // Determine whether to use in the frontend or backend
-        $application = JFactory::getApplication();
-        if (!$application->isSite()) return false;
-        if (JRequest::getCmd('tmpl') == 'component') return false;
+	/**
+	 * @var JApplicationCms
+	 */
+	protected $app;
 
-        // Get the plugin-parameters
- 	    $pluginParams = $this->getParams();
+	/**
+	 * Event onAfterRender
+	 */
+	public function onAfterRender()
+	{
+		if ($this->allowTrademarkReplacement() == false)
+		{
+			return false;
+		}
 
-        $trademarks = explode( ',', $pluginParams->get('trademarks', '')) ;
-        $article_id = $pluginParams->get('article_id', 0) ;
-        $article_link = $pluginParams->get('article_link', 0) ;
-        $occurrances = $pluginParams->get('occurrances', -1) ;
+		$trademarks  = explode(',', $this->params->get('trademarks', ''));
+		$occurrances = $this->params->get('occurrances', -1);
 
-        if ($article_link == 1 && $article_id > 0) {
-            include_once JPATH_SITE.'/components/com_content/helpers/route.php';
-            $article_url = ContentHelperRoute::getArticleRoute($article_id);
-            $tm = '<sup><a href="'.$article_url.'" title="'.JText::_('Trademarks').'">TM</a></sup>' ;
-        } else {
-            $tm = '<sup>TM</sup>' ;
-        }
+		$tm = $this->getTrademarkText();
 
-        // We have trademarks
-        if (!empty($trademarks)) {
+		// We have trademarks
+		if (!empty($trademarks))
+		{
+			// Get the body and fetch a list of files
+			$html = $this->app->getBody();
+			preg_match("/<body.*\/body>/s", $html, $matches);
+			$htmlBody         = $matches[0];
+			$originalHtmlBody = $htmlBody;
 
-            // Get the body and fetch a list of files
-            $html = JResponse::getBody();
-            preg_match("/<body.*\/body>/s", $html, $matches);
-            $htmlBody = $matches[0];
-            $originalHtmlBody = $htmlBody;
+			foreach ($trademarks as $trademark)
+			{
+				$trademark = trim($trademark);
+				$t         = preg_quote($trademark);
+				$search    = '/>([^>]+)([\W]+)(' . $t . ')([\W]+)/';
+				$replace   = '>\1\2\3' . $tm . '\4';
 
-            foreach ($trademarks as $trademark) {
-                $trademark = trim($trademark);
-                $t = preg_quote($trademark);
-                $search = '/>([^>]+)([\W]+)('.$t.')([\W]+)/';
-                $replace = '>\1\2\3'.$tm.'\4' ;
-                if($trademark != '') {
-                    $htmlBody = preg_replace($search, $replace, $htmlBody, $occurrances);
-                }
-            }
+				if ($trademark != '')
+				{
+					$htmlBody = preg_replace($search, $replace, $htmlBody, $occurrances);
+				}
+			}
 
-            $html = str_replace($originalHtmlBody, $htmlBody, $html);
-            JResponse::setBody($html);
-        }
-        
-        return true;
+			$html = str_replace($originalHtmlBody, $htmlBody, $html);
+			$this->app->setBody($html);
+		}
+
+		return true;
 	}
 
-    /**
-     * Load the parameters
-     *
-     * @access private
-     * @param null
-     * @return JParameter
-     */
-    private function getParams()
-    {
-        jimport('joomla.version');
-        $version = new JVersion();
-        if(version_compare($version->RELEASE, '1.5', 'eq')) {
-            $plugin = JPluginHelper::getPlugin('system', 'trademark');
-            $params = new JParameter($plugin->params);
-            return $params;
-        } else {
-            return $this->params;
-        }
-    }
+	/**
+	 * @return bool
+	 */
+	protected function allowTrademarkReplacement()
+	{
+		// Determine whether to use in the frontend or backend
+		if (!$this->app->isSite())
+		{
+			return false;
+		}
+
+		$input = $this->app->input;
+
+		if ($input->getCmd('tmpl') == 'component')
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getTrademarkText()
+	{
+		$article_url  = $this->getArticleUrl();
+
+		if (!$article_url)
+		{
+			return '<sup>TM</sup>';
+		}
+
+		$tm = '<sup><a href="' . $article_url . '" title="' . JText::_('Trademarks') . '">TM</a></sup>';
+
+		return $tm;
+	}
+
+	/**
+	 * @return string|false
+	 */
+	protected function getArticleUrl()
+	{
+		$article_link = (int) $this->params->get('article_link', 0);
+
+		if ($article_link == 0)
+		{
+			return false;
+		}
+
+		$article_id = (int) $this->params->get('article_id', 0);
+
+		if (!$article_id > 0)
+		{
+			return false;
+		}
+
+		include_once JPATH_SITE . '/components/com_content/helpers/route.php';
+		$article_url = ContentHelperRoute::getArticleRoute($article_id);
+
+		return $article_url;
+	}
 }

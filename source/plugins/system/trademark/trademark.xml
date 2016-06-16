@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="plugin" group="system" method="upgrade">
-	<name>PLG_SYSTEM_TRADEMARK</name>
-	<author>Yireo</author>
-	<creationDate>March 2016</creationDate>
-	<copyright>Copyright 2016 Yireo.com. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-	<authorEmail>info@yireo.com</authorEmail>
-	<authorUrl>www.yireo.com</authorUrl>
-	<version>1.2.2</version>
-	<description>A system plugin to dynamically add trademarks to custom strings</description>
+<extension version="3.3" type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_TRADEMARK</name>
+    <author>Yireo</author>
+    <creationDate>March 2016</creationDate>
+    <copyright>Copyright 2016 Yireo.com. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+    <authorEmail>info@yireo.com</authorEmail>
+    <authorUrl>www.yireo.com</authorUrl>
+    <version>1.2.2</version>
+    <description>A system plugin to dynamically add trademarks to custom strings</description>
 
-	<files>
-		<filename plugin="trademark">trademark.php</filename>
-	</files>
+    <files>
+        <filename plugin="trademark">trademark.php</filename>
+    </files>
 
     <languages>
         <language tag="en-GB">en-GB.plg_system_trademark.ini</language>
@@ -21,22 +21,29 @@
 
     <config>
         <fields name="params">
-    	    <fieldset name="basic" addfieldpath="/administrator/components/com_content/models/fields">
-	        	<field name="trademarks" type="textarea" rows="2" cols="20" default="Joomla!" label="PLG_SYSTEM_TRADEMARK_FIELD_TRADEMARKS" description="PLG_SYSTEM_TRADEMARK_FIELD_TRADEMARKS_DESC" />
-    		    <field name="article_link" type="list" label="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_LINK" default="0" description="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_LINK_DESC">
-			        <option value="0">No</option>
-    		    	<option value="1">Yes</option>
+            <fieldset name="basic" addfieldpath="/administrator/components/com_content/models/fields">
+                <field name="trademarks" type="textarea" rows="2" cols="20" default="Joomla!"
+                       label="PLG_SYSTEM_TRADEMARK_FIELD_TRADEMARKS"
+                       description="PLG_SYSTEM_TRADEMARK_FIELD_TRADEMARKS_DESC"/>
+                <field name="article_link" type="list" label="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_LINK" default="0"
+                       description="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_LINK_DESC">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </field>
-	    	    <field name="article_id" type="modal_article" label="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_ID" description="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_ID_DESC" />
-        		<field name="occurrances" type="list" label="PLG_SYSTEM_TRADEMARK_FIELD_OCCURRANCES" default="1" description="PLG_SYSTEM_TRADEMARK_FIELD_OCCURRANCES">
-	    		    <option value="-1">All occurrances</option>
-		        	<option value="1">First occurrance</option>
+                <field name="article_id" type="modal_article" label="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_ID"
+                       description="PLG_SYSTEM_TRADEMARK_FIELD_ARTICLE_ID_DESC"/>
+                <field name="occurrances" type="list" label="PLG_SYSTEM_TRADEMARK_FIELD_OCCURRANCES" default="1"
+                       description="PLG_SYSTEM_TRADEMARK_FIELD_OCCURRANCES">
+                    <option value="-1">All occurrances</option>
+                    <option value="1">First occurrance</option>
                 </field>
             </fieldset>
         </fields>
     </config>
 
     <updateservers>
-        <server type="extension" priority="1" name="plg_system_trademark">https://www.yireo.com/updates/plg_system_trademark.xml</server>
+        <server type="extension" priority="1" name="plg_system_trademark">
+            https://www.yireo.com/updates/plg_system_trademark.xml
+        </server>
     </updateservers>
 </extension>
